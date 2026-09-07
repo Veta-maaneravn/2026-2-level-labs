@@ -18,6 +18,7 @@ def main() -> None:
     with open("lab_1_classify_profile/assets/texts/en.txt", "r", encoding="utf-8") as file:
         en_text = file.read()
     print('Hello world')
+
     result = None
     assert result, "Detection result is None"
 
