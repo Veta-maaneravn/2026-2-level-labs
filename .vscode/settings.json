@@ -1,7 +1,7 @@
 {
     "files.trimTrailingWhitespace": true,
     "python.testing.pytestArgs": [
-        "."
+        "lab_1_classify_profile"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,

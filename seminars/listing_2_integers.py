@@ -16,22 +16,22 @@ Integers and float data.
 # arithmetic operations can be applied: +, -, *, /, //, %, **
 
 # Create numbers
-a = 10  # int
-b = 3.5  # float
-print(a, b)
+# a = 10  # int
+# b = 3.5  # float
+# print(a, b)
 
-# Basic arithmetic operations
-print(a + b)  # addition
-print(a - b)  # subtraction
-print(a * b)  # multiplication
-print(a / b)  # division (always float)
-print(a // 3)  # integer division
-print(a % 3)  # modulus (remainder)
-print(a**2)  # exponentiation
+# # Basic arithmetic operations
+# print(a + b)  # addition
+# print(a - b)  # subtraction
+# print(a * b)  # multiplication
+# print(a / b)  # division (always float)
+# print(a // 3)  # integer division
+# print(a % 3)  # modulus (remainder)
+# print(a**2)  # exponentiation
 
 # Type conversion
-print(int(3.9))  # convert float to int → 3
-print(float(7))  # convert int to float → 7.0
+# print(int(3.9))  # convert float to int → 3
+# print(float(7))  # convert int to float → 7.0
 
 # Useful functions for numbers (some of them)
 # abs(x)       → absolute value of x
@@ -58,12 +58,12 @@ def add_numbers(a: int, b: int) -> int:
     Returns:
         int: Sum of a and b
     """
-    # student implementation goes here
+    return a + b
 
 
-# add_numbers(2, 3) → 5
-# add_numbers(-5, 10) → 5
-# add_numbers(0, 0) → 0
+print(add_numbers(2, 3)) # → 5
+print(add_numbers(-5, 10)) #→ 5
+print(add_numbers(0, 0)) #→ 0
 
 
 # Task 2:
@@ -79,12 +79,12 @@ def average(a: float, b: float, c: float) -> float:
     Returns:
         float: Average value of the three numbers
     """
-    # student implementation goes here
+    return (a + b + c)/3
 
 
-# average(1, 2, 3) → 2.0
-# average(10, 20, 30) → 20.0
-# average(5.5, 6.5, 7.5) → 6.5
+print(average(1, 2, 3)) #→ 2.0
+print(average(10, 20, 30)) #→ 20.0
+print(average(5.5, 6.5, 7.5)) #→ 6.5
 
 
 # Task 3:
@@ -98,13 +98,13 @@ def is_even(n: int) -> bool:
     Returns:
         bool: True if n is even, False otherwise
     """
-    # student implementation goes here
+    return True if n % 2 == 0 else False
 
 
-# is_even(2) → True
-# is_even(3) → False
-# is_even(0) → True
-# is_even(-4) → True
+print(is_even(2)) #→ True
+print(is_even(3)) #→ False
+print(is_even(0)) #→ True
+print(is_even(-4)) # → True
 
 
 # Task 4:
@@ -119,11 +119,12 @@ def area_of_circle(radius: float) -> float:
         float: Area of the circle
     """
     # student implementation goes here
+    return radius**2*3.14159
 
 
-# area_of_circle(1) → 3.14159...
-# area_of_circle(0) → 0
-# area_of_circle(2.5) → ~19.63495
+print(area_of_circle(1))# → 3.14159...
+print(area_of_circle(0))# → 0
+print(area_of_circle(2.5)) #→ ~19.63495
 
 
 # Task 5:
@@ -138,11 +139,15 @@ def factorial(n: int) -> int:
         int: Factorial of n
     """
     # student implementation goes here
+    a = 1
+    for x in range(2, n + 1):
+        a = x * a
+    return a
 
 
-# factorial(0) → 1
-# factorial(1) → 1
-# factorial(5) → 120
+print(factorial(0))# → 1
+print(factorial(1))# → 1
+print(factorial(5))# → 120
 
 
 # Task 6:
@@ -158,14 +163,16 @@ def power(a: float, b: int) -> float:
         float: Result of a raised to the power of b
     """
     # student implementation goes here
+    return pow(a, b)
 
 
-# power(2, 3) → 8
-# power(5, 0) → 1
-# power(2, -2) → 0.25
+print(power(2, 3))# → 8
+print(power(5, 0))# → 1
+print(power(2, -2))# → 0.25
 
 
-# Task 7:
+Task 7:
+import math
 def distance(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Calculate the Euclidean distance between two points.
@@ -181,11 +188,11 @@ def distance(x1: float, y1: float, x2: float, y2: float) -> float:
         float: Euclidean distance between the two points
     """
     # student implementation goes here
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-
-# distance(0, 0, 3, 4) → 5.0
-# distance(1, 2, 1, 2) → 0.0
-# distance(-1, -1, 2, 3) → 5.0
+print(distance(0, 0, 3, 4))# → 5.0
+print(distance(1, 2, 1, 2))# → 0.0
+print(distance(-1, -1, 2, 3)) #→ 5.0
 
 
 # Task 8 (advanced):
@@ -200,6 +207,7 @@ def fibonacci(n: int) -> int:
         int: n-th Fibonacci number
     """
     # student implementation goes here
+    pass
 
 
 # fibonacci(0) → 0
@@ -220,6 +228,7 @@ def is_prime(n: int) -> bool:
         bool: True if n is prime, False otherwise
     """
     # student implementation goes here
+    pass
 
 
 # is_prime(2) → True
