@@ -28,11 +28,11 @@ def tokenize(text: str) -> Sequence[str] | None:
     """
     if not isinstance(text, str):
         return None
-    cleaned_text = []
+    cleaned_parts = []
     for item in text.lower():
         if item.isalpha() or item.isspace():
-            cleaned_text.append(item)
-    cleaned_text = ''.join(cleaned_text)
+            cleaned_parts.append(item)
+    cleaned_text = ''.join(cleaned_parts)
     tokens = cleaned_text.split()
     return tokens
 
@@ -137,7 +137,11 @@ def create_language_profile(
         if not isinstance(word, str):
             return None
     prepared_text = tokenize(text)
+    if prepared_text is None:
+        return None
     without_stop_words = remove_stop_words(prepared_text, stop_words)
+    if without_stop_words is None:
+        return None
     words_frequencies = calculate_frequencies(without_stop_words)
     if words_frequencies is None:
         return None
@@ -284,7 +288,10 @@ def compare_profiles_by_mse(
         float | None: The distance between the profiles.
         In case of corrupt input arguments or invalid profile structure, None is returned.
     """
-    if not all((check_profile(unknown_profile), check_profile(profile_to_compare))):
+    if not all((
+        check_profile(unknown_profile),
+        check_profile(profile_to_compare),
+    )):
         return None
     all_words = set(unknown_profile[1].keys()) | set(profile_to_compare[1].keys())
     actual = []
@@ -320,6 +327,10 @@ def detect_language_by_mse(
         return None
     compared_with_first = compare_profiles_by_mse(unknown_profile, profile_1)
     compared_with_second = compare_profiles_by_mse(unknown_profile, profile_2)
+    if compared_with_first is None:
+        return None
+    if compared_with_second is None:
+        return None
     if compared_with_first < compared_with_second:
         return profile_1[0]
     if compared_with_second < compared_with_first:
@@ -385,16 +396,16 @@ def collect_profiles(paths_to_profiles: Sequence[str]) -> Sequence[ProfileType] 
         Sequence[ProfileType] | None: Sequence of loaded profiles.
         Returns None in case of incorrect input types.
     """
-    if not isinstance(paths_to_profiles, (tuple, list)):
-        return None
-    for path in paths_to_profiles:
-        if not isinstance(path, str):
-            return None
-    downloaded_profiles = [load_profile(item) for item in paths_to_profiles]
-    for x in downloaded_profiles:
-        if not check_profile(x):
-            return None
-    return downloaded_profiles
+    # if not isinstance(paths_to_profiles, (tuple, list)):
+    #     return None
+    # for path in paths_to_profiles:
+    #     if not isinstance(path, str):
+    #         return None
+    # downloaded_profiles = [load_profile(item) for item in paths_to_profiles]
+    # for x in downloaded_profiles:
+    #     if not check_profile(x):
+    #         return None
+    # return downloaded_profiles
 
 
 
@@ -416,22 +427,22 @@ def detect_language_advanced(
         The sequence is sorted by best MSE value, then by best Top-N value.
         Returns None in case of incorrect input types.
     """
-    if not all((
-        check_profile(unknown_profile),
-        isinstance(known_profiles, (list, tuple)),
-        isinstance(top_n, int),
-    )):
-        return None
-    for profile in known_profiles:
-        if not check_profile(profile):
-            return None
-    profiles = []
-    for profile in known_profiles:
-        by_mse = compare_profiles_by_mse(unknown_profile, profile)
-        by_top_n = compare_profiles_by_top_n(unknown_profile, profile, top_n)
-        profiles.append((profile[0], {'MSE': by_mse, 'Top-N': by_top_n}))
-    sorted_profiles = sorted(profiles, key=lambda x: (x[1].get('MSE'), -x[1].get('Top-N'), x[0]))
-    return sorted_profiles
+    # if not all((
+    #     check_profile(unknown_profile),
+    #     isinstance(known_profiles, (list, tuple)),
+    #     isinstance(top_n, int),
+    # )):
+    #     return None
+    # for profile in known_profiles:
+    #     if not check_profile(profile):
+    #         return None
+    # profiles = []
+    # for profile in known_profiles:
+    #     by_mse = compare_profiles_by_mse(unknown_profile, profile)
+    #     by_top_n = compare_profiles_by_top_n(unknown_profile, profile, top_n)
+    #     profiles.append((profile[0], {'MSE': by_mse, 'Top-N': by_top_n}))
+    # sorted_profiles = sorted(profiles, key=lambda x: (x[1].get('MSE'), -x[1].get('Top-N'), x[0]))
+    # return sorted_profiles
 
 
 
@@ -449,20 +460,20 @@ def print_report(
 
     In case of incorrect type inputs, does not print anything.
     """
-    if not all((
-        check_profile(unknown_profile),
-        isinstance(metrics_stats, (list, tuple)),
-        isinstance(top_n, int),
-    )):
-        return None
-    print('Unknown language stats')
-    print('=' * 22)
-    print(f'Popular words: {get_top_n_words(unknown_profile[1], top_n)}')
-    print(f"Max length word: '{max(unknown_profile[1].keys(), key = len)}'")
-    print(f"Min length word: '{min(unknown_profile[1].keys(), key = len)}'")
-    average_value = sum(len(word) for word in unknown_profile[1].keys()) / len(unknown_profile[1].keys())
-    print(f'Average token length: {average_value:.5f}')
-    print('Language scores')
-    print('-' * 15)
-    for language, scores in metrics_stats:
-        print(f'{language}: MSE {scores.get("MSE"):.5f}  Top-N Score {scores.get("Top-N"):.5f}')
+    # if not all((
+    #     check_profile(unknown_profile),
+    #     isinstance(metrics_stats, (list, tuple)),
+    #     isinstance(top_n, int),
+    # )):
+    #     return None
+    # print('Unknown language stats')
+    # print('=' * 22)
+    # print(f'Popular words: {get_top_n_words(unknown_profile[1], top_n)}')
+    # print(f"Max length word: '{max(unknown_profile[1].keys(), key = len)}'")
+    # print(f"Min length word: '{min(unknown_profile[1].keys(), key = len)}'")
+    # average_value = sum(len(word) for word in unknown_profile[1].keys()) / len(unknown_profile[1].keys())
+    # print(f'Average token length: {average_value:.5f}')
+    # print('Language scores')
+    # print('-' * 15)
+    # for language, scores in metrics_stats:
+    #     print(f'{language}: MSE {scores.get("MSE"):.5f}  Top-N Score {scores.get("Top-N"):.5f}')

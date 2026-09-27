@@ -189,9 +189,9 @@ def distance(x1: float, y1: float, x2: float, y2: float) -> float:
     # student implementation goes here
 
 
-print(distance(0, 0, 3, 4))# → 5.0
-print(distance(1, 2, 1, 2))# → 0.0
-print(distance(-1, -1, 2, 3)) #→ 5.0
+# print(distance(0, 0, 3, 4)) → 5.0
+# print(distance(1, 2, 1, 2)) → 0.0
+# print(distance(-1, -1, 2, 3)) → 5.0
 
 
 # Task 8 (advanced):

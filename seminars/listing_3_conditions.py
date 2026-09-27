@@ -103,8 +103,7 @@ def is_positive(n: int) -> bool:
     """
     if n > 0:
         return True
-    else:
-        return False
+    return False
     # student implementation goes here
 
 
@@ -211,8 +210,7 @@ def is_in_range(n: int, low: int, high: int) -> bool:
     """
     if low <= n <= high:
         return True
-    else:
-        return False
+    return False
     # student implementation goes here
 
 
