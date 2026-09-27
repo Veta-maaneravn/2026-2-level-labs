@@ -81,10 +81,7 @@ def calculate_frequencies(tokens: Sequence[str]) -> dict[str, float] | None:
             return None
     freq = {}
     for word in tokens:
-        if word in freq:
-            freq[word] += 1.0
-        else:
-            freq[word] = 1.0
+        freq[word] = freq.get(word, 0.0) + 1.0
     for word in freq:
         freq[word] = freq[word]/len(tokens)
     return freq
@@ -107,9 +104,7 @@ def get_top_n_words(freq_dict: dict[str, float], top_n: int) -> Sequence[str] | 
     if top_n <= 0:
         return None
     sorted_dict = sorted(freq_dict.items(), key = lambda x: (-x[1], x[0]))
-    top_n_words = []
-    for word, _ in sorted_dict[:top_n]:
-        top_n_words.append(word)
+    top_n_words = [word for word, _ in sorted_dict[:top_n]]
     return top_n_words
 
 
@@ -188,6 +183,8 @@ def compare_profiles_by_top_n(
         Returns None in case of incorrect input types.
     """
     if not all((check_profile(unknown_profile), check_profile(profile_to_compare), isinstance(top_n, int))):
+        return None
+    if top_n <= 0:
         return None
     sorted_dict_unkn = get_top_n_words(unknown_profile[1], top_n)
     sorted_dict_comp = get_top_n_words(profile_to_compare[1], top_n)
@@ -280,8 +277,12 @@ def compare_profiles_by_mse(
     """
     if not all((check_profile(unknown_profile), check_profile(profile_to_compare))):
         return None
-
-
+    actual = []
+    predicted = []
+    for item in unknown_profile[1]:
+        actual.append(unknown_profile[1][item])
+        predicted.append(profile_to_compare[1].get(item, 0.0))
+    return calculate_mse(actual, predicted)
 
 
 
@@ -301,6 +302,15 @@ def detect_language_by_mse(
         str | None: Unknown profile language.
         Returns None in case of incorrect input types.
     """
+    if not all((check_profile(unknown_profile), check_profile(profile_1), check_profile(profile_2))):
+        return None
+    compared_with_first = compare_profiles_by_mse(unknown_profile, profile_1)
+    compared_with_second = compare_profiles_by_mse(unknown_profile, profile_2)
+    if compared_with_first < compared_with_second:
+        return profile_1[0]
+    if compared_with_second < compared_with_first:
+        return profile_2[0]
+    return min(profile_1[0], profile_2[0])
 
 
 
@@ -319,6 +329,13 @@ def save_profile(profile: ProfileType, save_path: str) -> bool:
         bool: False in case of incorrect input types or if the profile
         is missing obligatory keys. True if the profile is saved.
     """
+    if not all((check_profile(profile), isinstance(save_path, str))):
+        return False
+    prepared_profile = {'name': profile[0], 'freq': profile[1], 'n_words': profile[2]}
+    with open(save_path, 'w', encoding='utf-8') as f:
+        json.dump(prepared_profile, f, ensure_ascii=False, indent=4)
+    return True
+
 
 
 def load_profile(path_to_file: str) -> ProfileType | None:
@@ -332,6 +349,17 @@ def load_profile(path_to_file: str) -> ProfileType | None:
         ProfileType | None: Loaded profile.
         Returns None in case of incorrect input types.
     """
+    if not isinstance(path_to_file, str):
+        return None
+    with open(path_to_file, 'r', encoding='utf-8') as f:
+        profile = json.load(f)
+    if not isinstance(profile, dict):
+        return None
+    processed_profile = (profile.get('name'), profile.get('freq'), profile.get('n_words'))
+    if not check_profile(processed_profile):
+        return None
+    return processed_profile
+
 
 
 def collect_profiles(paths_to_profiles: Sequence[str]) -> Sequence[ProfileType] | None:
@@ -345,6 +373,17 @@ def collect_profiles(paths_to_profiles: Sequence[str]) -> Sequence[ProfileType] 
         Sequence[ProfileType] | None: Sequence of loaded profiles.
         Returns None in case of incorrect input types.
     """
+    if not isinstance(paths_to_profiles, (tuple, list)):
+        return None
+    for path in paths_to_profiles:
+        if not isinstance(path, str):
+            return None
+    downloaded_profiles = [load_profile(item) for item in paths_to_profiles]
+    for x in downloaded_profiles:
+        if not check_profile(x):
+            return None
+    return downloaded_profiles
+
 
 
 def detect_language_advanced(
@@ -365,6 +404,21 @@ def detect_language_advanced(
         The sequence is sorted by best MSE value, then by best Top-N value.
         Returns None in case of incorrect input types.
     """
+    if not all((check_profile(unknown_profile), isinstance(known_profiles, (list, tuple)), isinstance(top_n, int))):
+        return None
+    for profile in known_profiles:
+        if not check_profile(profile):
+            return None
+    profiles = []
+    for profile in known_profiles:
+        by_mse = compare_profiles_by_mse(unknown_profile, profile)
+        by_top_n = compare_profiles_by_top_n(unknown_profile, profile, top_n)
+        if by_top_n is None or by_mse is None:
+            return None
+        profiles.append((profile[0], {'MSE': by_mse, 'Top-N': by_top_n}))
+    sorted_profiles = sorted(profiles, key=lambda x: (x[1].get('MSE'), -x[1].get('Top-N'), x[0]))
+    return sorted_profiles
+
 
 
 def print_report(
@@ -381,3 +435,16 @@ def print_report(
 
     In case of incorrect type inputs, does not print anything.
     """
+    if not all((check_profile(unknown_profile), isinstance(metrics_stats, (list, tuple)), isinstance(top_n, int))):
+        return None
+    print('Unknown language stats')
+    print('=' * 22)
+    print(f'Popular words: {get_top_n_words(unknown_profile[1], top_n)}')
+    print(f"Max length word: '{max(unknown_profile[1].keys(), key = len)}'")
+    print(f"Min length word: '{min(unknown_profile[1].keys(), key = len)}'")
+    average_value = sum(len(word) for word in unknown_profile[1].keys()) / len(unknown_profile[1].keys())
+    print(f'Average token length: {average_value:.5f}')
+    print('Language scores')
+    print('-' * 15)
+    for language, scores in metrics_stats:
+        print(f'{language}: MSE {scores.get("MSE"):.5f}  Top-N Score {scores.get("Top-N"):.5f}')
