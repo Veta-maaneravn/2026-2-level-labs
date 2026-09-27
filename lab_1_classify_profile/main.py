@@ -471,9 +471,4 @@ def print_report(
     # print(f'Popular words: {get_top_n_words(unknown_profile[1], top_n)}')
     # print(f"Max length word: '{max(unknown_profile[1].keys(), key = len)}'")
     # print(f"Min length word: '{min(unknown_profile[1].keys(), key = len)}'")
-    # average_value = sum(len(word) for word in unknown_profile[1].keys()) / len(unknown_profile[1].keys())
-    # print(f'Average token length: {average_value:.5f}')
-    # print('Language scores')
-    # print('-' * 15)
-    # for language, scores in metrics_stats:
-    #     print(f'{language}: MSE {scores.get("MSE"):.5f}  Top-N Score {scores.get("Top-N"):.5f}')
+
