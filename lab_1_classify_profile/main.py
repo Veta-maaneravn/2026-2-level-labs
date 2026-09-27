@@ -471,4 +471,3 @@ def print_report(
     # print(f'Popular words: {get_top_n_words(unknown_profile[1], top_n)}')
     # print(f"Max length word: '{max(unknown_profile[1].keys(), key = len)}'")
     # print(f"Min length word: '{min(unknown_profile[1].keys(), key = len)}'")
-
