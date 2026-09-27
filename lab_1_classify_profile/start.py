@@ -3,8 +3,16 @@ Language detection starter.
 """
 
 # pylint: disable=unused-variable, duplicate-code
-from lab_1_classify_profile.main import (tokenize, remove_stop_words, calculate_frequencies, get_top_n_words, create_language_profile, detect_language_by_top_n, detect_language_by_mse)
 
+from lab_1_classify_profile.main import (
+    calculate_frequencies,
+    create_language_profile,
+    detect_language_by_mse,
+    detect_language_by_top_n,
+    get_top_n_words,
+    remove_stop_words,
+    tokenize,
+)
 
 def main() -> None:
     """
@@ -39,9 +47,6 @@ def main() -> None:
     result_mse = detect_language_by_mse(unknown_profile, en_profile, de_profile)
     print("Detected language by MSE:", result_mse)
 
-    assert result, "Detection result is None"
-
-    result = None
     assert result, "Detection result is None"
 
 
