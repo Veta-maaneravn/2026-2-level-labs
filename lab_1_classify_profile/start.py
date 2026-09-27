@@ -14,6 +14,7 @@ from lab_1_classify_profile.main import (
     tokenize,
 )
 
+
 def main() -> None:
     """
     Launches an implementation.

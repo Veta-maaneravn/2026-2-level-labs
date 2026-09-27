@@ -127,7 +127,11 @@ def create_language_profile(
         ProfileType | None: Language profile.
         Returns None in case of incorrect input types.
     """
-    if not all((isinstance(language, str), isinstance(text, str), isinstance(stop_words, (list, tuple)))):
+    if not all((
+        isinstance(language, str),
+        isinstance(text, str),
+        isinstance(stop_words, (list, tuple)),
+    )):
         return None
     for word in stop_words:
         if not isinstance(word, str):
@@ -155,14 +159,10 @@ def check_profile(profile: ProfileType) -> bool:
     """
     if not isinstance(profile, tuple) or len(profile) != 3:
         return False
-    if not isinstance(profile[0], str):
-        return False
-    if not isinstance(profile[1], dict):
+    if not isinstance(profile[0], str) or not isinstance(profile[1], dict):
         return False
     for keys, values in profile[1].items():
-        if not isinstance(keys, str):
-            return False
-        if not isinstance(values, float):
+        if not isinstance(keys, str) or not isinstance(values, float):
             return False
     if not isinstance(profile[2], int):
         return False
@@ -211,7 +211,12 @@ def detect_language_by_top_n(
         str | None: Unknown profile language.
         Returns None in case of incorrect input types.
     """
-    if not all((check_profile(unknown_profile), check_profile(profile_1), check_profile(profile_2), isinstance(top_n, int))):
+    if not all((
+        check_profile(unknown_profile),
+        check_profile(profile_1),
+        check_profile(profile_2),
+        isinstance(top_n, int),
+    )):
         return None
     first_compared = compare_profiles_by_top_n(unknown_profile, profile_1, top_n)
     second_compared = compare_profiles_by_top_n(unknown_profile, profile_2, top_n)
@@ -243,9 +248,9 @@ def calculate_mse(predicted: Sequence[float], actual: Sequence[float]) -> float 
     if not isinstance(predicted, (list, tuple)) or not isinstance(actual, (list, tuple)):
         return None
     if not predicted or not actual:
-            return 0.0
+        return 0.0
     if len(actual) != len(predicted):
-            return None
+        return None
     for n in predicted:
         if not isinstance(n, float):
             return None
@@ -253,8 +258,8 @@ def calculate_mse(predicted: Sequence[float], actual: Sequence[float]) -> float 
         if not isinstance(n, float):
             return None
     mse = 0
-    for x in range(len(actual)):
-        difference = actual[x] - predicted[x]
+    for i, a in enumerate(actual):
+        difference = a - predicted[i]
         mse += difference ** 2
     return mse / len(actual)
 
@@ -277,12 +282,13 @@ def compare_profiles_by_mse(
     """
     if not all((check_profile(unknown_profile), check_profile(profile_to_compare))):
         return None
+    all_words = set(unknown_profile[1].keys()) | set(profile_to_compare[1].keys())
     actual = []
     predicted = []
-    for item in unknown_profile[1]:
-        actual.append(unknown_profile[1][item])
+    for item in all_words:
+        actual.append(unknown_profile[1].get(item, 0.0))
         predicted.append(profile_to_compare[1].get(item, 0.0))
-    return calculate_mse(actual, predicted)
+    return calculate_mse(predicted, actual)
 
 
 
@@ -315,8 +321,7 @@ def detect_language_by_mse(
 
 
 # Mark 10
-
-
+import json
 def save_profile(profile: ProfileType, save_path: str) -> bool:
     """
     Saves a language profile
@@ -404,7 +409,11 @@ def detect_language_advanced(
         The sequence is sorted by best MSE value, then by best Top-N value.
         Returns None in case of incorrect input types.
     """
-    if not all((check_profile(unknown_profile), isinstance(known_profiles, (list, tuple)), isinstance(top_n, int))):
+    if not all((
+        check_profile(unknown_profile),
+        isinstance(known_profiles, (list, tuple)),
+        isinstance(top_n, int),
+    )):
         return None
     for profile in known_profiles:
         if not check_profile(profile):
@@ -413,8 +422,6 @@ def detect_language_advanced(
     for profile in known_profiles:
         by_mse = compare_profiles_by_mse(unknown_profile, profile)
         by_top_n = compare_profiles_by_top_n(unknown_profile, profile, top_n)
-        if by_top_n is None or by_mse is None:
-            return None
         profiles.append((profile[0], {'MSE': by_mse, 'Top-N': by_top_n}))
     sorted_profiles = sorted(profiles, key=lambda x: (x[1].get('MSE'), -x[1].get('Top-N'), x[0]))
     return sorted_profiles

@@ -16,31 +16,31 @@ Integers and float data.
 # arithmetic operations can be applied: +, -, *, /, //, %, **
 
 # Create numbers
-# a = 10  # int
-# b = 3.5  # float
-# print(a, b)
+a = 10  # int
+b = 3.5  # float
+print(a, b)
 
-# # Basic arithmetic operations
-# print(a + b)  # addition
-# print(a - b)  # subtraction
-# print(a * b)  # multiplication
-# print(a / b)  # division (always float)
-# print(a // 3)  # integer division
-# print(a % 3)  # modulus (remainder)
-# print(a**2)  # exponentiation
+# Basic arithmetic operations
+print(a + b)  # addition
+print(a - b)  # subtraction
+print(a * b)  # multiplication
+print(a / b)  # division (always float)
+print(a // 3)  # integer division
+print(a % 3)  # modulus (remainder)
+print(a**2)  # exponentiation
 
 # Type conversion
-# print(int(3.9))  # convert float to int → 3
-# print(float(7))  # convert int to float → 7.0
+print(int(3.9))  # convert float to int → 3
+print(float(7))  # convert int to float → 7.0
 
 # Useful functions for numbers (some of them)
-# abs(x)       → absolute value of x
-# round(x, n)  → round x to n decimal places
-# pow(a, b)    → a raised to the power of b
-# divmod(a, b) → returns a tuple (a // b, a % b)
-# max(a, b, …) → the largest value
-# min(a, b, …) → the smallest value
-# sum(iterable) → sum of all elements in an iterable
+# abs(x)      # → absolute value of x
+# round(x, n) # → round x to n decimal places
+# pow(a, b)   # → a raised to the power of b
+# divmod(a, b)# → returns a tuple (a // b, a % b)
+# #max(a, b, …)# → the largest value
+# #min(a, b, …)# → the smallest value
+# sum(iterable)# → sum of all elements in an iterable
 
 
 # TASKS
@@ -171,7 +171,7 @@ print(power(5, 0))# → 1
 print(power(2, -2))# → 0.25
 
 
-Task 7:
+#Task 7:
 import math
 def distance(x1: float, y1: float, x2: float, y2: float) -> float:
     """
