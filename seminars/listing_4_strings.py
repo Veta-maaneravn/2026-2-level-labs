@@ -194,7 +194,7 @@ def combo_string(first_string: str, second_string: str) -> str:
     Returns:
         str: Concatenated result
     """
-    
+    pass
     # student implementation goes here
 
 

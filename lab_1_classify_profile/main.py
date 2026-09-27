@@ -182,7 +182,11 @@ def compare_profiles_by_top_n(
         float | None: The distance between profiles.
         Returns None in case of incorrect input types.
     """
-    if not all((check_profile(unknown_profile), check_profile(profile_to_compare), isinstance(top_n, int))):
+    if not all((
+        check_profile(unknown_profile),
+        check_profile(profile_to_compare),
+        isinstance(top_n, int),
+    )):
         return None
     if top_n <= 0:
         return None
@@ -308,7 +312,11 @@ def detect_language_by_mse(
         str | None: Unknown profile language.
         Returns None in case of incorrect input types.
     """
-    if not all((check_profile(unknown_profile), check_profile(profile_1), check_profile(profile_2))):
+    if not all((
+        check_profile(unknown_profile),
+        check_profile(profile_1),
+        check_profile(profile_2),
+    )):
         return None
     compared_with_first = compare_profiles_by_mse(unknown_profile, profile_1)
     compared_with_second = compare_profiles_by_mse(unknown_profile, profile_2)
@@ -321,7 +329,6 @@ def detect_language_by_mse(
 
 
 # Mark 10
-import json
 def save_profile(profile: ProfileType, save_path: str) -> bool:
     """
     Saves a language profile
@@ -334,12 +341,12 @@ def save_profile(profile: ProfileType, save_path: str) -> bool:
         bool: False in case of incorrect input types or if the profile
         is missing obligatory keys. True if the profile is saved.
     """
-    if not all((check_profile(profile), isinstance(save_path, str))):
-        return False
-    prepared_profile = {'name': profile[0], 'freq': profile[1], 'n_words': profile[2]}
-    with open(save_path, 'w', encoding='utf-8') as f:
-        json.dump(prepared_profile, f, ensure_ascii=False, indent=4)
-    return True
+    # if not all((check_profile(profile), isinstance(save_path, str))):
+    #     return False
+    # prepared_profile = {'name': profile[0], 'freq': profile[1], 'n_words': profile[2]}
+    # with open(save_path, 'w', encoding='utf-8') as f:
+    #     json.dump(prepared_profile, f, ensure_ascii=False, indent=4)
+    # return True
 
 
 
@@ -354,16 +361,16 @@ def load_profile(path_to_file: str) -> ProfileType | None:
         ProfileType | None: Loaded profile.
         Returns None in case of incorrect input types.
     """
-    if not isinstance(path_to_file, str):
-        return None
-    with open(path_to_file, 'r', encoding='utf-8') as f:
-        profile = json.load(f)
-    if not isinstance(profile, dict):
-        return None
-    processed_profile = (profile.get('name'), profile.get('freq'), profile.get('n_words'))
-    if not check_profile(processed_profile):
-        return None
-    return processed_profile
+    # if not isinstance(path_to_file, str):
+    #     return None
+    # with open(path_to_file, 'r', encoding='utf-8') as f:
+    #     profile = json.load(f)
+    # if not isinstance(profile, dict):
+    #     return None
+    # processed_profile = (profile.get('name'), profile.get('freq'), profile.get('n_words'))
+    # if not check_profile(processed_profile):
+    #     return None
+    # return processed_profile
 
 
 
@@ -442,7 +449,11 @@ def print_report(
 
     In case of incorrect type inputs, does not print anything.
     """
-    if not all((check_profile(unknown_profile), isinstance(metrics_stats, (list, tuple)), isinstance(top_n, int))):
+    if not all((
+        check_profile(unknown_profile),
+        isinstance(metrics_stats, (list, tuple)),
+        isinstance(top_n, int),
+    )):
         return None
     print('Unknown language stats')
     print('=' * 22)

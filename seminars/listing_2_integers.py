@@ -98,7 +98,7 @@ def is_even(n: int) -> bool:
     Returns:
         bool: True if n is even, False otherwise
     """
-    return True if n % 2 == 0 else False
+    # student implementation goes here
 
 
 print(is_even(2)) #→ True
@@ -172,7 +172,6 @@ print(power(2, -2))# → 0.25
 
 
 #Task 7:
-import math
 def distance(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Calculate the Euclidean distance between two points.
@@ -188,7 +187,7 @@ def distance(x1: float, y1: float, x2: float, y2: float) -> float:
         float: Euclidean distance between the two points
     """
     # student implementation goes here
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
 
 print(distance(0, 0, 3, 4))# → 5.0
 print(distance(1, 2, 1, 2))# → 0.0
@@ -207,7 +206,7 @@ def fibonacci(n: int) -> int:
         int: n-th Fibonacci number
     """
     # student implementation goes here
-    pass
+
 
 
 # fibonacci(0) → 0
@@ -228,7 +227,7 @@ def is_prime(n: int) -> bool:
         bool: True if n is prime, False otherwise
     """
     # student implementation goes here
-    pass
+
 
 
 # is_prime(2) → True

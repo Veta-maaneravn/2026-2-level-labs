@@ -235,8 +235,6 @@ def complex_condition(a: bool, b: bool, c: bool) -> bool:
     Returns:
         bool: Result of the expression
     """
-    if
-
     # student implementation goes here
 
 
@@ -260,7 +258,6 @@ def leap_year(year: int) -> bool:
     Returns:
         bool: True if leap year, False otherwise
     """
-    if year
     # student implementation goes here
 
 
