@@ -417,6 +417,8 @@ def detect_language_by_mse(
     return sorted_list[0]
 
 # Mark 10
+
+
 def save_profile(profile: ProfileType, save_path: str) -> bool:
     """
     Saves a language profile
