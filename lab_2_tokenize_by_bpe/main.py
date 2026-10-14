@@ -237,7 +237,7 @@ def get_vocabulary(
     In case of corrupt input arguments, None is returned
     """
     if not all((
-            isinstance(word_frequencies, (dict, type(None))),
+            isinstance(word_frequencies, (dict)),
             isinstance(unknown_token, str),
         )):
             return None
@@ -250,6 +250,23 @@ def get_vocabulary(
         for s in k:
             if not isinstance(s, str):
                 return None
+    tokens = set()
+    for word in word_frequencies:
+        tokens.update(word)
+    words = {t for t in tokens if len(t) > 1}
+    letters = {t for t in tokens if len(t) == 1}
+    for word in words:
+        for letter in word:
+            letters.add(letter)
+    d = {}
+    sorted_tokens = sorted(tokens, key = lambda x: (-len(x), x))
+    sorted_letters = sorted(letters)
+    for i, t in enumerate(sorted_tokens):
+        d[t] = i
+    d[unknown_token] = len(sorted_tokens)
+    for i, l in enumerate(sorted_letters, start = len(sorted_tokens) + 1):
+        d[l] = i
+    return d
 
 
 
@@ -273,17 +290,34 @@ def decode(
     In case of corrupt input arguments, None is returned
     """
     if not all((
-        isinstance(encoded_text, (tuple, list, type(None))),
-        isinstance(vocabulary, (dict, type(None))),
+        isinstance(encoded_text, (tuple, list)),
+        isinstance(vocabulary, dict),
         isinstance(end_of_word_token, (str, type(None))),
     )):
+        return None
+    if len(encoded_text) == 0:
         return None
     for k, v in vocabulary.items():
         if not all((
             isinstance(k, str),
             isinstance(v, int),
+            not isinstance(v, bool),
         )):
             return None
+    for char in encoded_text:
+        if not isinstance(char, int) or isinstance(char, bool):
+            return None
+    reverse = {i: token for token, i in vocabulary.items()}
+    text = []
+    for x in encoded_text:
+        if x not in reverse:
+            return None
+        text.append(reverse[x])
+    for j in range(len(text)):
+        if end_of_word_token is not None and text[j] == end_of_word_token:
+            text[j] = text[j].replace(end_of_word_token, ' ')
+    actual_text = ''.join(text)
+    return actual_text
 
 
 
