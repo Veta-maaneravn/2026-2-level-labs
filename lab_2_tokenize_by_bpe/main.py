@@ -357,7 +357,7 @@ def tokenize_word(
         segments = new_segments
     result = []
     for s in segments:
-         result.extend(
+        result.extend(
             [vocabulary[s]] if (s in vocabulary and s != unknown_token)
             else [vocabulary[unknown_token]] * len(s)
         )
