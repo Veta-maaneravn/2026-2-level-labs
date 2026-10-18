@@ -6,6 +6,7 @@ BPE and machine translation evaluation
 
 # pylint:disable=unused-argument
 from typing import Sequence
+import json
 
 
 def prepare_word(
@@ -218,8 +219,6 @@ def train(
 
 
 
-
-
 def get_vocabulary(
     word_frequencies: dict[tuple[str, ...], int], unknown_token: str
 ) -> dict[str, int] | None:
@@ -308,13 +307,15 @@ def decode(
         if not isinstance(char, int) or isinstance(char, bool):
             return None
     reverse = {i: token for token, i in vocabulary.items()}
+    if len(set(vocabulary.values())) != len(vocabulary):
+        return None
     text = []
     for x in encoded_text:
         if x not in reverse:
             return None
         text.append(reverse[x])
     for j in range(len(text)):
-        if end_of_word_token is not None and text[j] == end_of_word_token:
+        if end_of_word_token is not None and end_of_word_token in text[j]:
             text[j] = text[j].replace(end_of_word_token, ' ')
     actual_text = ''.join(text)
     return actual_text
@@ -345,6 +346,43 @@ def tokenize_word(
         isinstance(unknown_token, str),
     )):
         return None
+    for s in word:
+        if not isinstance(s, str):
+            return None
+    for k, v in vocabulary.items():
+        if not all((isinstance(k, str),
+                   isinstance(v, int)
+        )):
+            return None
+    if unknown_token not in vocabulary:
+            return None
+    text = ''.join(word)
+    if end_of_word is not None and not text.endswith(end_of_word):
+        text += end_of_word
+    tokens = [t for t in vocabulary if t != unknown_token]
+    sorted_tokens = sorted(tokens, key = lambda t: (-len(t), t))
+    segments = [text]
+    for t in sorted_tokens:
+        new_segments = []
+        for s in segments:
+            if s in vocabulary:
+                new_segments.append(s)
+                continue
+            parts = s.split(t)
+            for idx, part in enumerate(parts):
+                if part:
+                    new_segments.append(part)
+                if idx < len(parts) - 1:
+                    new_segments.append(t)
+        segments = new_segments
+    result = []
+    for s in segments:
+        if s in vocabulary and s != unknown_token:
+            result.append(vocabulary[s])
+        else:
+            result.extend([vocabulary[unknown_token]] * len(s))
+    return result
+
 
 
 def load_vocabulary(vocab_path: str) -> dict[str, int] | None:
@@ -359,6 +397,19 @@ def load_vocabulary(vocab_path: str) -> dict[str, int] | None:
 
     In case of corrupt input arguments, None is returned
     """
+    if not isinstance(vocab_path, str):
+        return None
+    with open(vocab_path, 'r', encoding='utf-8') as file:
+        d = json.load(file)
+    if not isinstance(d, dict):
+        return None
+    if not all(
+        isinstance(k, str) and
+        isinstance(v, int) for k, v in d.items()
+    ):
+        return None
+    return d
+
 
 
 def encode(
@@ -384,6 +435,39 @@ def encode(
     In case of corrupt input arguments or functions used return None,
     None is returned
     """
+    if not all((
+        isinstance(original_text, str),
+        isinstance(vocabulary, dict),
+        isinstance(start_of_word_token, (str, type(None))),
+        isinstance(end_of_word_token, (str, type(None))),
+        isinstance(unknown_token, str),
+    )):
+        return None
+    for k, v in vocabulary.items():
+        if not all((isinstance(k, str), isinstance(v, int))):
+            return None
+    words = original_text.split()
+    if not words:
+        return None
+    result = []
+    for raw_word in words:
+        prepared_word = prepare_word(
+            raw_word,
+            start_of_word_token,
+            end_of_word_token
+        )
+        if prepared_word is None:
+            return None
+        tokenized = tokenize_word(
+            prepared_word,
+            vocabulary,
+            end_of_word_token,
+            unknown_token
+        )
+        if tokenized is None:
+            return None
+        result.extend(tokenized)
+    return result
 
 
 def collect_ngrams(text: str, order: int) -> list[tuple[str, ...]] | None:

@@ -101,15 +101,12 @@ def is_positive(n: int) -> bool:
     Returns:
         bool: True if n > 0, False otherwise
     """
-    if n > 0:
-        return True
-    return False
     # student implementation goes here
 
 
-is_positive(5)
-is_positive(-3)
-is_positive(0)
+# is_positive(5) → True
+# is_positive(-3) → False
+# is_positive(0) → False
 
 
 # Task 2:
@@ -123,17 +120,12 @@ def number_sign(n: int) -> str:
     Returns:
         str: "positive", "negative", or "zero"
     """
-    if n > 0:
-        return 'positive'
-    if n < 0:
-        return 'negative'
-    return 'zero'
     # student implementation goes here
 
 
-number_sign(5)
-number_sign(-3)
-number_sign(0)
+# number_sign(5) → "positive"
+# number_sign(-3) → "negative"
+# number_sign(0) → "zero"
 
 
 # Task 3:
@@ -148,17 +140,12 @@ def max_of_two(a: int, b: int) -> int:
     Returns:
         int: The larger of a and b
     """
-    if a > b:
-        return a
-    if b > a:
-        return b
-    return a
     # student implementation goes here
 
 
-max_of_two(3, 7)
-max_of_two(10, 2)
-max_of_two(5, 5)
+# max_of_two(3, 7) → 7
+# max_of_two(10, 2) → 10
+# max_of_two(5, 5) → 5
 
 
 # Task 4:
@@ -177,22 +164,12 @@ def grade(score: int) -> str:
     Returns:
         str: Letter grade
     """
-    if 90 <= score <= 100:
-        return 'A'
-    if 80 <= score <= 89:
-        return 'B'
-    if 70 <= score <= 79:
-        return 'C'
-    if 60 <= score <= 69:
-        return 'D'
-    return 'F'
-
     # student implementation goes here
 
 
-grade(95)
-grade(72)
-grade(59)
+# grade(95) → "A"
+# grade(72) → "C"
+# grade(59) → "F"
 
 
 # Task 5:
@@ -208,15 +185,12 @@ def is_in_range(n: int, low: int, high: int) -> bool:
     Returns:
         bool: True if low <= n <= high, False otherwise
     """
-    if low <= n <= high:
-        return True
-    return False
     # student implementation goes here
 
 
-is_in_range(5, 1, 10)
-is_in_range(0, 1, 10)
-is_in_range(10, 1, 10)
+# is_in_range(5, 1, 10) → True
+# is_in_range(0, 1, 10) → False
+# is_in_range(10, 1, 10) → True
 
 
 # Task 6:
