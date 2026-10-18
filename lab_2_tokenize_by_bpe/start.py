@@ -4,10 +4,7 @@ BPE Tokenizer starter
 
 # pylint:disable=too-many-locals, unused-variable
 from lab_2_tokenize_by_bpe.main import (
-    prepare_word,
     collect_frequencies,
-    count_tokens_pairs,
-    merge_tokens,
     train,
     get_vocabulary,
     decode,
@@ -27,9 +24,16 @@ def main() -> None:
     with open('lab_2_tokenize_by_bpe/assets/ru_raw.txt', 'r', encoding='utf-8') as text_file:
         text_to_translate = text_file.read()
     with open('lab_2_tokenize_by_bpe/assets/ru_encoded.txt', 'r', encoding='utf-8') as text_file:
-        ideal_translation = text_file.read()
+        ideal_translation = [int(value) for value in text_file.read().split()]
 
-    with open('lab_2_tokenize_by_bpe/assets/secrets/secret_3.txt', 'r', encoding='utf-8') as text_file:
+    with open('lab_2_tokenize_by_bpe/assets/ru_raw.txt', 'r', encoding='utf-8') as text_file:
+        text_to_translate = text_file.read()
+
+    with open('lab_2_tokenize_by_bpe/assets/ru_encoded.txt', 'r', encoding='utf-8') as text_file:
+        ideal_translation = [int(value) for value in text_file.read().split()]
+
+    secret = 'lab_2_tokenize_by_bpe/assets/secrets/secret_3.txt'
+    with open(secret, 'r', encoding='utf-8') as text_file:
         secret_text = text_file.read()
 
     encoded_secret = []

@@ -31,7 +31,7 @@ def prepare_word(
         isinstance(end_of_word, (str, type(None))),
     )):
         return None
-    prepared_word = [letter for letter in raw_word]
+    prepared_word = list(raw_word)
     if start_of_word is not None:
         prepared_word.insert(0, start_of_word)
     if end_of_word is not None:
@@ -127,22 +127,15 @@ def merge_tokens(
 
     In case of corrupt input arguments, None is returned
     """
-    if not all((
-        isinstance(word_frequencies, dict),
-        isinstance(pair, tuple),
-    )):
+    if not (isinstance(word_frequencies, dict) and
+            isinstance(pair, tuple) and
+            len(pair) == 2 and
+            all(isinstance(x, str) for x in pair)):
         return None
     for key, value in word_frequencies.items():
-        if not all((
-            isinstance(key, tuple),
-            isinstance(value, int),
-        )):
-            return None
-        for x in key:
-            if not isinstance(x, str):
-                return None
-    for y in pair:
-        if not isinstance(y, str):
+        if not (isinstance(key, tuple) and
+                isinstance(value, int) and
+                all(isinstance(x, str) for x in key)):
             return None
     another_dict = {}
     for token, count in word_frequencies.items():
@@ -158,10 +151,7 @@ def merge_tokens(
                 new_tokens.append(token[i])
                 i += 1
         new_keys = tuple(new_tokens)
-        if new_keys in another_dict:
-            another_dict[new_keys] += count
-        else:
-            another_dict[new_keys] = count
+        another_dict[new_keys] = another_dict.get(new_keys, 0) + count
     return another_dict
 
 
@@ -238,8 +228,8 @@ def get_vocabulary(
     if not all((
             isinstance(word_frequencies, (dict)),
             isinstance(unknown_token, str),
-        )):
-            return None
+    )):
+        return None
     for k, v in word_frequencies.items():
         if not all((
             isinstance(k, tuple),
@@ -249,21 +239,14 @@ def get_vocabulary(
         for s in k:
             if not isinstance(s, str):
                 return None
-    tokens = set()
-    for word in word_frequencies:
-        tokens.update(word)
-    words = {t for t in tokens if len(t) > 1}
-    letters = {t for t in tokens if len(t) == 1}
-    for word in words:
-        for letter in word:
-            letters.add(letter)
+    unique_tokens = {unknown_token}
+    for tokens in word_frequencies.keys():
+        for token in tokens:
+            unique_tokens.add(token)
+            unique_tokens.update(token)
+    sorted_tokens = sorted(unique_tokens, key = lambda x: (-len(x), x))
     d = {}
-    sorted_tokens = sorted(tokens, key = lambda x: (-len(x), x))
-    sorted_letters = sorted(letters)
-    for i, t in enumerate(sorted_tokens):
-        d[t] = i
-    d[unknown_token] = len(sorted_tokens)
-    for i, l in enumerate(sorted_letters, start = len(sorted_tokens) + 1):
+    for i, l in enumerate(sorted_tokens):
         d[l] = i
     return d
 
@@ -294,7 +277,7 @@ def decode(
         isinstance(end_of_word_token, (str, type(None))),
     )):
         return None
-    if len(encoded_text) == 0:
+    if not encoded_text or not vocabulary:
         return None
     for k, v in vocabulary.items():
         if not all((
@@ -355,7 +338,7 @@ def tokenize_word(
         )):
             return None
     if unknown_token not in vocabulary:
-            return None
+        return None
     text = ''.join(word)
     if end_of_word is not None and not text.endswith(end_of_word):
         text += end_of_word
@@ -442,6 +425,8 @@ def encode(
         isinstance(end_of_word_token, (str, type(None))),
         isinstance(unknown_token, str),
     )):
+        return None
+    if not original_text or not vocabulary:
         return None
     for k, v in vocabulary.items():
         if not all((isinstance(k, str), isinstance(v, int))):
