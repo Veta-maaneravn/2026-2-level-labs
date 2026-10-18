@@ -275,9 +275,7 @@ def decode(
         isinstance(encoded_text, (tuple, list)),
         isinstance(vocabulary, dict),
         isinstance(end_of_word_token, (str, type(None))),
-    )):
-        return None
-    if not encoded_text or not vocabulary:
+    )) or not encoded_text or not vocabulary:
         return None
     for k, v in vocabulary.items():
         if not all((
@@ -297,9 +295,9 @@ def decode(
         if x not in reverse:
             return None
         text.append(reverse[x])
-    for j in range(len(text)):
-        if end_of_word_token is not None and end_of_word_token in text[j]:
-            text[j] = text[j].replace(end_of_word_token, ' ')
+    for j, t in enumerate(text):
+        if end_of_word_token is not None and end_of_word_token in t:
+            text[j] = t.replace(end_of_word_token, ' ')
     actual_text = ''.join(text)
     return actual_text
 
@@ -329,34 +327,33 @@ def tokenize_word(
         isinstance(unknown_token, str),
     )):
         return None
-    for s in word:
-        if not isinstance(s, str):
-            return None
-    for k, v in vocabulary.items():
-        if not all((isinstance(k, str),
-                   isinstance(v, int)
-        )):
-            return None
+    if (not all(isinstance(s, str) for s in word) or
+        not all(isinstance(k, str) and
+                isinstance(v, int)
+                for k, v in vocabulary.items())):
+        return None
     if unknown_token not in vocabulary:
         return None
     text = ''.join(word)
     if end_of_word is not None and not text.endswith(end_of_word):
         text += end_of_word
-    tokens = [t for t in vocabulary if t != unknown_token]
-    sorted_tokens = sorted(tokens, key = lambda t: (-len(t), t))
+    sorted_tokens = sorted(
+        (t for t in vocabulary if t != unknown_token),
+        key = lambda t: (-len(t), t)
+    )
     segments = [text]
     for t in sorted_tokens:
         new_segments = []
         for s in segments:
             if s in vocabulary:
                 new_segments.append(s)
-                continue
-            parts = s.split(t)
-            for idx, part in enumerate(parts):
-                if part:
-                    new_segments.append(part)
-                if idx < len(parts) - 1:
-                    new_segments.append(t)
+            else:
+                parts = s.split(t)
+                for i, part in enumerate(parts):
+                    if part:
+                        new_segments.append(part)
+                    if i < len(parts) - 1:
+                        new_segments.append(t)
         segments = new_segments
     result = []
     for s in segments:
@@ -426,13 +423,11 @@ def encode(
         isinstance(unknown_token, str),
     )):
         return None
-    if not original_text or not vocabulary:
-        return None
     for k, v in vocabulary.items():
         if not all((isinstance(k, str), isinstance(v, int))):
             return None
-    words = original_text.split()
-    if not words:
+    words = original_text.split() if original_text else None
+    if not words or not vocabulary:
         return None
     result = []
     for raw_word in words:

@@ -5,11 +5,11 @@ BPE Tokenizer starter
 # pylint:disable=too-many-locals, unused-variable
 from lab_2_tokenize_by_bpe.main import (
     collect_frequencies,
-    train,
-    get_vocabulary,
     decode,
-    load_vocabulary,
     encode,
+    get_vocabulary,
+    load_vocabulary,
+    train,
 )
 
 
@@ -50,7 +50,7 @@ def main() -> None:
     vocabulary = get_vocabulary(trained, '<unk>')
     assert vocabulary, 'Getting vocabulary failed'
 
-    decoded = decode(secret_text, vocabulary, '</s>')
+    decoded = decode(encoded_secret, vocabulary, '</s>')
     assert decoded, 'Decoding failed'
     print('Dedcoded text', decoded)
 
