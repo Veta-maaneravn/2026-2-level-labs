@@ -5,8 +5,8 @@ BPE and machine translation evaluation
 """
 
 # pylint:disable=unused-argument
-from typing import Sequence
 import json
+from typing import Sequence
 
 
 def prepare_word(
@@ -357,10 +357,10 @@ def tokenize_word(
         segments = new_segments
     result = []
     for s in segments:
-        if s in vocabulary and s != unknown_token:
-            result.append(vocabulary[s])
-        else:
-            result.extend([vocabulary[unknown_token]] * len(s))
+         result.extend(
+            [vocabulary[s]] if (s in vocabulary and s != unknown_token)
+            else [vocabulary[unknown_token]] * len(s)
+        )
     return result
 
 
