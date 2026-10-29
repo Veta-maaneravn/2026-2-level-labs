@@ -7,6 +7,9 @@ Brainstorm from the lecture on designing a TicTacToe game.
 """
 
 # pylint:disable=too-few-public-methods
+from typing import Literal
+
+MarkerType = Literal["X", "O"]
 
 
 class Move:
@@ -36,16 +39,32 @@ class Player:
     """
 
 
+class Board:
+    """
+    Store moves made on the playing board and show its state.
+
+    Instance attributes:
+        _size (int): size of playing board (most commonly 3)
+        _moves_left (int): number of empty cells on the playing board
+        _moves (list[Move]): already made moves
+
+    Instance methods:
+        show(self, ...): Print current state of the board
+        add_move(self, ...): Add new valid move
+        get_moves(self, ...): Get already made moves
+        get_size(self, ...): Get size of board
+    """
+
+
 class Game:
     """
     Store game status and enable moves.
 
     Instance attributes:
-        _size (MarkerType): size of playing board (most commonly 3)
-        _board (MarkerType): playing board (most commonly 3x3)
+        _board (Board): playing board (most commonly 3x3)
         _players (tuple[Player, ...]): tuple with 2 players
         _current_player_idx (int): index of the player that should make a move next
-        _finished (MarkerType): flag if the game has finished: there was winner or tie
+        _finished (bool): flag if the game has finished: there was winner or tie
 
     Instance methods:
         _next_player(self): Update the next player to make a move.
@@ -53,25 +72,6 @@ class Game:
         _register_move(self, ...): Put the move on the playing board.
         _check_for_winner(self, ...): Check if win state is present
         play(self, ...): Process one step of game
-    """
-
-
-class Board:
-    """
-    Store game status and enable moves.
-
-    Instance attributes:
-        _size (MarkerType): size of playing board (most commonly 3)
-        _moves_left (int): number of empty cells on the playing board
-        _moves (list[Move]): already made moves
-
-
-    Instance methods:
-        show(self, ...): Print current state of the board
-        add_move(self, ...): Add new valid move
-        get_moves(self, ...): Get already made moves
-        get_size(self, ...): Get size of board
-
     """
 
 
