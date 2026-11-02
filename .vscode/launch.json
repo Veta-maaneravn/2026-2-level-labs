@@ -169,6 +169,16 @@
             }
         },
         {
+            "name": "[SEMINAR 9] Learn inheritance",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "seminars/listing_13_inheritance.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
             "name": "[ADMIN] Run tests",
             "type": "debugpy",
             "request": "launch",
