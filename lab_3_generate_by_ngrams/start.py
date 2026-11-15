@@ -61,6 +61,9 @@ def main() -> None:
     ngram_2 = model_reader.load(2)
     ngram_3 = model_reader.load(3)
     ngram_4 = model_reader.load(4)
+    assert (ngram_2 is not None and
+            ngram_3 is not None and
+            ngram_4 is not None), 'Loading models failed'
 
     text_processor = model_reader.get_text_processor()
 
