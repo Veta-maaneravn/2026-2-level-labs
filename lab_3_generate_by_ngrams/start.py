@@ -45,7 +45,7 @@ def main() -> None:
 
     prediction = generator.run('Vernon', 51)
     assert prediction, 'Greedy generation for letters failed'
-    print('The work of GreadyTextGenerator:', prediction)
+    print('The work of GreedyTextGenerator:', prediction)
 
     beam_searcher = BeamSearchTextGenerator(model, processor, 7).run('Vernon', 56)
 
@@ -56,12 +56,8 @@ def main() -> None:
         'lab_3_generate_by_ngrams/assets/en_own.json', '_'
     )
 
-    ngram_2 = model_reader.load(2)
-    ngram_3 = model_reader.load(3)
-    ngram_4 = model_reader.load(4)
-    assert (ngram_2 is not None and
-            ngram_3 is not None and
-            ngram_4 is not None), 'Loading models failed'
+    ngram_2, ngram_3, ngram_4 = (model_reader.load(n) for n in (2, 3, 4))
+    assert all(n is not None for n in (ngram_2, ngram_3, ngram_4)), 'Loading models failed'
 
     text_processor = model_reader.get_text_processor()
 
@@ -70,18 +66,19 @@ def main() -> None:
     assert back_off, 'BackOffGenerator for letters failed'
     print('The work of BackOffGenerator:', back_off)
 
+    result = back_off
+    assert result
+
     processor_text = WordProcessor('<eos>')
 
     encoded_text = processor_text.encode(text)
     assert encoded_text, 'Encoding for words failed'
     print('Encoded text (first 1000 words):', encoded_text[:1000])
 
-    ngram_text_2 = NGramLanguageModel(encoded_text, 2)
-    ngram_text_3 = NGramLanguageModel(encoded_text, 3)
-    ngram_text_4 = NGramLanguageModel(encoded_text, 4)
-    assert (ngram_text_2.build() and
-            ngram_text_3.build() and
-            ngram_text_4.build()), 'Building models for words failed'
+    ngram_text_2, ngram_text_3, ngram_text_4 = (
+        NGramLanguageModel(encoded_text, n) for n in (2, 3, 4)
+    )
+    assert all(n.build() for n in (ngram_text_2, ngram_text_3, ngram_text_4)), 'Building failed'
 
     generator_text = GreedyTextGenerator(ngram_text_4, processor_text).run('Harry looked at', 12)
     assert generator_text, 'Greedy generation for words failed'
