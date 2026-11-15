@@ -273,9 +273,6 @@ class WordProcessor(TextProcessor):
         _end_of_word_token (str): A token denoting sentence boundary
         _storage (dict): Dictionary in the form of <token: identifier>
     """
-    def __init__(self, end_of_word_token):
-        super().__init__('<eos>')
-
 
     def _tokenize(self, text: str) -> tuple[str, ...] | None:
         """
