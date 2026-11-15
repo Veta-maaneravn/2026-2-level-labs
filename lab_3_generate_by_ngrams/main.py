@@ -55,9 +55,9 @@ class TextProcessor:
                 if cleaned_parts[-1] != self._end_of_word_token:
                     cleaned_parts.append(self._end_of_word_token)
         if not cleaned_parts:
-                return None
+            return None
         if text[-1] in '.?!':
-                cleaned_parts.append(self._end_of_word_token)
+            cleaned_parts.append(self._end_of_word_token)
         return tuple(cleaned_parts)
 
 
@@ -322,7 +322,7 @@ class WordProcessor(TextProcessor):
         """
         if (not isinstance(element, str) or
             not element):
-            return None
+            return
         if element not in self._storage:
             self._storage[element] = len(self._storage)
 
@@ -398,7 +398,7 @@ class NGramLanguageModel:
         """
         if not isinstance(frequencies, dict):
             return
-        return self._n_gram_frequencies.update(frequencies)
+        self._n_gram_frequencies.update(frequencies)
 
 
     def build(self) -> bool:
@@ -616,24 +616,23 @@ class BeamSearcher:
 
         In case of corrupt input arguments or unexpected behaviour of methods used return None.
         """
-        if not all((
-            isinstance(sequence, tuple),
-            isinstance(next_tokens, list),
-            isinstance(sequence_candidates, dict),
-        )):
-            return None
-        if not (
-            all(isinstance(n, int) for n in sequence) and
-            all(isinstance(i, int) and
-                isinstance(f, float) for i, f in next_tokens) and
-            all(
-                isinstance(k, tuple) and
-                isinstance(v, float) and
-                all(isinstance(s, int) for s in k)
-                for k, v in sequence_candidates.items()
-            )
+        if (not isinstance(sequence, tuple) or
+            not isinstance(next_tokens, list) or
+            not isinstance(sequence_candidates, dict)
         ):
             return None
+        if not all(isinstance(n, int) for n in sequence):
+            return None
+        if not all(isinstance(i, int) and
+                isinstance(f, float) for i, f in next_tokens
+        ):
+            return None
+        for k, v in sequence_candidates.items():
+            if (not isinstance(k, tuple) or
+                not isinstance(v, float) or
+                not all(isinstance(s, int) for s in k)
+            ):
+                return None
         if (not next_tokens or
             len(next_tokens) > self._beam_width or
             sequence not in sequence_candidates
@@ -845,11 +844,10 @@ class NGramLanguageModelReader:
         for ngram, count in ngrams.items():
             context = ngram[:-1]
             context_counts[context] = context_counts.get(context, 0) + count
-        freqs = {}
-        for ngram, count in ngrams.items():
-            context = ngram[:-1]
-            if context_counts[context] > 0:
-                freqs[ngram] = count / context_counts[context]
+        freqs = {
+            ngram: count / context_counts[ngram[:-1]]
+            for ngram, count in ngrams.items()
+        }
         exemplar = NGramLanguageModel(None, n_gram_size)
         exemplar.set_n_grams(freqs)
         return exemplar
@@ -909,8 +907,6 @@ class BackOffGenerator:
             seq_len <= 0
         ):
             return None
-        if not prompt.endswith(self._text_processor.get_end_of_word_token()):
-            prompt = prompt + self._text_processor.get_end_of_word_token()
         encoded_prompt = self._text_processor.encode(prompt)
         if encoded_prompt is None:
             return None
