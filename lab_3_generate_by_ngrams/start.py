@@ -53,7 +53,7 @@ def main() -> None:
     print('The work of BeamSearchTextGenerator:', beam_searcher)
 
     model_reader = NGramLanguageModelReader(
-    'lab_3_generate_by_ngrams/assets/en_own.json', '_'
+        'lab_3_generate_by_ngrams/assets/en_own.json', '_'
     )
 
     ngram_2 = model_reader.load(2)
