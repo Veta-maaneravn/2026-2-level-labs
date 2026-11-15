@@ -74,7 +74,7 @@ def main() -> None:
 
     encoded_text = processor_text.encode(text)
     assert encoded_text, 'Encoding for words failed'
-    print('Encoded text (firts 1000 words):', encoded_text[:1000])
+    print('Encoded text (first 1000 words):', encoded_text[:1000])
 
     ngram_text_2 = NGramLanguageModel(encoded_text, 2)
     ngram_text_3 = NGramLanguageModel(encoded_text, 3)
