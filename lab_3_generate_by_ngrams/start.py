@@ -3,15 +3,6 @@ Generation by NGrams starter
 """
 
 # pylint:disable=too-many-locals, unused-import, unused-variable
-from lab_3_generate_by_ngrams.main import (
-    BackOffGenerator,
-    BeamSearchTextGenerator,
-    GreedyTextGenerator,
-    NGramLanguageModel,
-    NGramLanguageModelReader,
-    TextProcessor,
-    WordProcessor,
-)
 
 from lab_3_generate_by_ngrams.main import (
     BackOffGenerator,
@@ -129,41 +120,6 @@ def main() -> None:
 
     result = backoff_generated
     assert result
-
-    processor_text = WordProcessor('<eos>')
-
-    encoded_text = processor_text.encode(text)
-    assert encoded_text, 'Encoding for words failed'
-    print('Encoded text (first 1000 words):', encoded_text[:1000])
-
-    ngram_text_2, ngram_text_3, ngram_text_4 = (
-        NGramLanguageModel(encoded_text, n) for n in (2, 3, 4)
-    )
-    assert all(n.build() for n in (ngram_text_2, ngram_text_3, ngram_text_4)), 'Building failed'
-
-    generator_text = GreedyTextGenerator(ngram_text_4, processor_text).run('Harry looked at', 12)
-    assert generator_text, 'Greedy generation for words failed'
-    print('The work of GreedyTextGenerator:', generator_text)
-
-    beam_searcher_text = BeamSearchTextGenerator(
-        ngram_text_4, processor_text, 3
-    ).run('Harry looked at', 12)
-    assert beam_searcher_text, 'Beam Search for words failed'
-    print('The work of Beam Search:', beam_searcher_text)
-
-    back_off_text = BackOffGenerator(
-        (ngram_text_2, ngram_text_3, ngram_text_4),
-        processor_text
-    ).run('Harry looked at', 12)
-    assert back_off_text, 'BackOff for words failed'
-    print('The work of BackOff:', back_off_text)
-
-    generator_letters = generator.run('Harry looked at', 60)
-    assert generator_letters, 'Generating by letters failed'
-    print(
-        'For comparison: GreedyTextGenerator with letters:',
-        generator_letters
-    )
 
 
 if __name__ == "__main__":
